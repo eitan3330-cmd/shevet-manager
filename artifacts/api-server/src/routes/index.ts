@@ -1,0 +1,48 @@
+import { Router, type IRouter } from "express";
+import healthRouter from "./health";
+import scoutsRouter from "./scouts";
+import eventsRouter from "./events";
+import attendanceRouter from "./attendance";
+import budgetRouter from "./budget";
+import procurementRouter from "./procurement";
+import permissionsRouter from "./permissions";
+import statsRouter from "./stats";
+import yearsRouter from "./years";
+import usersRouter from "./users";
+import annualBudgetRouter from "./annual-budget";
+import eventWorkspaceRouter from "./event-workspace";
+import budgetLinesRouter from "./budget-lines";
+import activitiesRouter from "./activities";
+import globalTasksRouter from "./global-tasks";
+import procurementCategoriesRouter from "./procurement-categories";
+import scheduleRouter from "./schedule";
+import attendanceSessionsRouter from "./attendance-sessions";
+import settingsRouter from "./settings";
+import nextYearAssignmentsRouter from "./next-year-assignments";
+import eventDeadlinesRouter from "./event-deadlines";
+
+const router: IRouter = Router();
+
+router.use(healthRouter);
+router.use(scoutsRouter);
+router.use(eventsRouter);
+router.use(attendanceRouter);
+router.use(attendanceSessionsRouter);
+router.use(budgetRouter);
+router.use(procurementRouter);
+router.use(permissionsRouter);
+router.use(statsRouter);
+router.use(yearsRouter);
+router.use(usersRouter);
+router.use(annualBudgetRouter);
+router.use(eventWorkspaceRouter);
+router.use(budgetLinesRouter);
+router.use(activitiesRouter);
+router.use(globalTasksRouter);
+router.use(procurementCategoriesRouter);
+router.use(scheduleRouter);
+router.use(settingsRouter);
+router.use(nextYearAssignmentsRouter);
+router.use(eventDeadlinesRouter);
+
+export default router;

@@ -1,0 +1,1013 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Tribe management system API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: roles
+    description: Role management
+  - name: scouts
+    description: Scout/chanich management
+  - name: events
+    description: Events/mifaalim management
+  - name: attendance
+    description: Attendance tracking
+  - name: budget
+    description: Budget management
+  - name: procurement
+    description: Procurement orders
+  - name: permissions
+    description: Role permissions management
+  - name: stats
+    description: Statistics and summaries
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ---- SCOUTS ----
+  /scouts:
+    get:
+      operationId: listScouts
+      tags: [scouts]
+      summary: List all scouts
+      parameters:
+        - name: gizra
+          in: query
+          schema:
+            type: ["string", "null"]
+          description: Filter by gizra (kvutza group)
+        - name: role
+          in: query
+          schema:
+            type: ["string", "null"]
+          description: Filter by role
+      responses:
+        "200":
+          description: List of scouts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scout"
+    post:
+      operationId: createScout
+      tags: [scouts]
+      summary: Create a scout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScoutBody"
+      responses:
+        "201":
+          description: Scout created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scout"
+
+  /scouts/{id}:
+    get:
+      operationId: getScout
+      tags: [scouts]
+      summary: Get a scout by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Scout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scout"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateScout
+      tags: [scouts]
+      summary: Update a scout
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateScoutBody"
+      responses:
+        "200":
+          description: Updated scout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Scout"
+    delete:
+      operationId: deleteScout
+      tags: [scouts]
+      summary: Delete a scout
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ---- EVENTS (Mifaalim) ----
+  /events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      summary: List all events
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: ["string", "null"]
+          description: Filter by category (hadracha/logistics)
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventBody"
+      responses:
+        "201":
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{id}:
+    get:
+      operationId: getEvent
+      tags: [events]
+      summary: Get event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateEvent
+      tags: [events]
+      summary: Update an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEventBody"
+      responses:
+        "200":
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+    delete:
+      operationId: deleteEvent
+      tags: [events]
+      summary: Delete an event
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ---- ATTENDANCE ----
+  /attendance:
+    get:
+      operationId: listAttendance
+      tags: [attendance]
+      summary: List attendance records
+      parameters:
+        - name: eventId
+          in: query
+          schema:
+            type: ["integer", "null"]
+        - name: scoutId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Attendance"
+    post:
+      operationId: createAttendance
+      tags: [attendance]
+      summary: Record attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAttendanceBody"
+      responses:
+        "201":
+          description: Attendance recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+
+  /attendance/{id}:
+    patch:
+      operationId: updateAttendance
+      tags: [attendance]
+      summary: Update attendance status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAttendanceBody"
+      responses:
+        "200":
+          description: Updated attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+    delete:
+      operationId: deleteAttendance
+      tags: [attendance]
+      summary: Delete attendance record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ---- BUDGET ----
+  /budget:
+    get:
+      operationId: listBudgetItems
+      tags: [budget]
+      summary: List budget items
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of budget items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BudgetItem"
+    post:
+      operationId: createBudgetItem
+      tags: [budget]
+      summary: Create a budget item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBudgetItemBody"
+      responses:
+        "201":
+          description: Budget item created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetItem"
+
+  /budget/{id}:
+    patch:
+      operationId: updateBudgetItem
+      tags: [budget]
+      summary: Update a budget item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBudgetItemBody"
+      responses:
+        "200":
+          description: Updated budget item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetItem"
+    delete:
+      operationId: deleteBudgetItem
+      tags: [budget]
+      summary: Delete a budget item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ---- PROCUREMENT ----
+  /procurement:
+    get:
+      operationId: listProcurementOrders
+      tags: [procurement]
+      summary: List procurement orders
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of procurement orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProcurementOrder"
+    post:
+      operationId: createProcurementOrder
+      tags: [procurement]
+      summary: Create a procurement order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProcurementOrderBody"
+      responses:
+        "201":
+          description: Procurement order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcurementOrder"
+
+  /procurement/{id}:
+    patch:
+      operationId: updateProcurementOrder
+      tags: [procurement]
+      summary: Update a procurement order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProcurementOrderBody"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProcurementOrder"
+    delete:
+      operationId: deleteProcurementOrder
+      tags: [procurement]
+      summary: Delete a procurement order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ---- PERMISSIONS ----
+  /permissions:
+    get:
+      operationId: listPermissions
+      tags: [permissions]
+      summary: List all role permissions
+      responses:
+        "200":
+          description: List of permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RolePermission"
+    post:
+      operationId: updatePermissions
+      tags: [permissions]
+      summary: Update permissions for a role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionsBody"
+      responses:
+        "200":
+          description: Updated permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RolePermission"
+
+  # ---- STATS ----
+  /stats/dashboard:
+    get:
+      operationId: getDashboardStats
+      tags: [stats]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /stats/budget-summary:
+    get:
+      operationId: getBudgetSummary
+      tags: [stats]
+      summary: Get budget summary
+      responses:
+        "200":
+          description: Budget summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BudgetSummary"
+
+  /stats/attendance-summary:
+    get:
+      operationId: getAttendanceSummary
+      tags: [stats]
+      summary: Get attendance summary per event
+      responses:
+        "200":
+          description: Attendance summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttendanceSummaryItem"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Scout:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        gizra:
+          type: string
+          description: "Kvutza group (e.g., gizra name)"
+        role:
+          type: string
+          description: "Role in tribe: marcaz_vogger, marcaz_tzair, roshatz, roshgad, chanich"
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - gizra
+        - role
+        - createdAt
+
+    CreateScoutBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        gizra:
+          type: string
+        role:
+          type: string
+        notes:
+          type: ["string", "null"]
+      required:
+        - name
+        - gizra
+        - role
+
+    UpdateScoutBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        gizra:
+          type: ["string", "null"]
+        role:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        category:
+          type: string
+          description: "hadracha or logistics"
+        status:
+          type: string
+          description: "upcoming, active, completed, cancelled"
+        date:
+          type: ["string", "null"]
+          format: date-time
+        location:
+          type: ["string", "null"]
+        budgetAllocated:
+          type: ["number", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - category
+        - status
+        - createdAt
+
+    CreateEventBody:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        category:
+          type: string
+        status:
+          type: string
+        date:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        budgetAllocated:
+          type: ["number", "null"]
+      required:
+        - name
+        - category
+        - status
+
+    UpdateEventBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        date:
+          type: ["string", "null"]
+        location:
+          type: ["string", "null"]
+        budgetAllocated:
+          type: ["number", "null"]
+
+    Attendance:
+      type: object
+      properties:
+        id:
+          type: integer
+        scoutId:
+          type: integer
+        eventId:
+          type: integer
+        status:
+          type: string
+          description: "present, absent, late, excused"
+        notes:
+          type: ["string", "null"]
+        scoutName:
+          type: ["string", "null"]
+        eventName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - scoutId
+        - eventId
+        - status
+        - createdAt
+
+    CreateAttendanceBody:
+      type: object
+      properties:
+        scoutId:
+          type: integer
+        eventId:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+      required:
+        - scoutId
+        - eventId
+        - status
+
+    UpdateAttendanceBody:
+      type: object
+      properties:
+        status:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    BudgetItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        amount:
+          type: number
+        type:
+          type: string
+          description: "income or expense"
+        category:
+          type: ["string", "null"]
+        eventId:
+          type: ["integer", "null"]
+        date:
+          type: ["string", "null"]
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - amount
+        - type
+        - createdAt
+
+    CreateBudgetItemBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        amount:
+          type: number
+        type:
+          type: string
+        category:
+          type: ["string", "null"]
+        eventId:
+          type: ["integer", "null"]
+        date:
+          type: ["string", "null"]
+      required:
+        - title
+        - amount
+        - type
+
+    UpdateBudgetItemBody:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        amount:
+          type: ["number", "null"]
+        type:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        eventId:
+          type: ["integer", "null"]
+        date:
+          type: ["string", "null"]
+
+    ProcurementOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        amount:
+          type: number
+        supplier:
+          type: ["string", "null"]
+        status:
+          type: string
+          description: "pending, approved, ordered, received, cancelled"
+        eventId:
+          type: ["integer", "null"]
+        requestedBy:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - amount
+        - status
+        - createdAt
+
+    CreateProcurementOrderBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        amount:
+          type: number
+        supplier:
+          type: ["string", "null"]
+        status:
+          type: string
+        eventId:
+          type: ["integer", "null"]
+        requestedBy:
+          type: ["string", "null"]
+      required:
+        - title
+        - amount
+        - status
+
+    UpdateProcurementOrderBody:
+      type: object
+      properties:
+        title:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        amount:
+          type: ["number", "null"]
+        supplier:
+          type: ["string", "null"]
+        status:
+          type: ["string", "null"]
+        eventId:
+          type: ["integer", "null"]
+        requestedBy:
+          type: ["string", "null"]
+
+    RolePermission:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+        section:
+          type: string
+          description: "hadracha or logistics"
+        canAccess:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - role
+        - section
+        - canAccess
+        - createdAt
+
+    UpdatePermissionsBody:
+      type: object
+      properties:
+        role:
+          type: string
+        section:
+          type: string
+        canAccess:
+          type: boolean
+      required:
+        - role
+        - section
+        - canAccess
+
+    DashboardStats:
+      type: object
+      properties:
+        totalScouts:
+          type: integer
+        totalEvents:
+          type: integer
+        upcomingEvents:
+          type: integer
+        totalBudget:
+          type: number
+        totalExpenses:
+          type: number
+        pendingOrders:
+          type: integer
+        recentActivity:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              message:
+                type: string
+              timestamp:
+                type: string
+            required:
+              - type
+              - message
+              - timestamp
+      required:
+        - totalScouts
+        - totalEvents
+        - upcomingEvents
+        - totalBudget
+        - totalExpenses
+        - pendingOrders
+        - recentActivity
+
+    BudgetSummary:
+      type: object
+      properties:
+        totalIncome:
+          type: number
+        totalExpenses:
+          type: number
+        balance:
+          type: number
+        byCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              amount:
+                type: number
+            required:
+              - category
+              - amount
+      required:
+        - totalIncome
+        - totalExpenses
+        - balance
+        - byCategory
+
+    AttendanceSummaryItem:
+      type: object
+      properties:
+        eventId:
+          type: integer
+        eventName:
+          type: string
+        totalRegistered:
+          type: integer
+        present:
+          type: integer
+        absent:
+          type: integer
+        late:
+          type: integer
+        excused:
+          type: integer
+      required:
+        - eventId
+        - eventName
+        - totalRegistered
+        - present
+        - absent
+        - late
+        - excused

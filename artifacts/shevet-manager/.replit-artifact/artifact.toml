@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ניהול השבט"
+version = "1.0.0"
+id = "artifacts/shevet-manager"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23421
+
+[services.development]
+run = "pnpm --filter @workspace/shevet-manager run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/shevet-manager", "run", "build" ]
+publicDir = "artifacts/shevet-manager/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23421"
+BASE_PATH = "/"
