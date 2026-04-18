@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "API Server (Express)",
+      "runtimeExecutable": "/Users/eitanschayek/.nvm/versions/node/v22.22.2/bin/pnpm",
+      "runtimeArgs": ["--filter", "@workspace/api-server", "run", "dev"],
+      "port": 3000,
+      "env": {
+        "PORT": "3000",
+        "PATH": "/Users/eitanschayek/.nvm/versions/node/v22.22.2/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    },
+    {
+      "name": "Frontend (Vite)",
+      "runtimeExecutable": "/Users/eitanschayek/.nvm/versions/node/v22.22.2/bin/pnpm",
+      "runtimeArgs": ["--filter", "@workspace/shevet-manager", "run", "dev"],
+      "port": 5173,
+      "env": {
+        "PORT": "5173",
+        "BASE_PATH": "/",
+        "PATH": "/Users/eitanschayek/.nvm/versions/node/v22.22.2/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  ]
+}
